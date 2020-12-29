@@ -1,0 +1,62 @@
+.body {
+    font-family: "Roboto", "RobotoDraft", "Helvetica", "Arial" , "sans-serif";
+}
+
+.form-heading {
+    font-family: 'Google Sans', 'Roboto', "Arial", "sans-serif";
+    font-weight: 400;
+}
+
+.stripe {
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    line-height: 50%;
+}
+
+.rounded-3 {
+    border-radius: 8px;
+}
+
+small {
+    font-size: 0.9em;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+button:focus,
+td:focus {
+    outline: none;
+}
+
+input[type=text] {
+    border-radius: 0 !important;
+}
+
+input[type=text]:focus{
+    border-bottom-color: rgb(103, 58, 183);
+}
+
+#helper {
+    position:absolute;
+}
+
+table {
+    float: left;
+}
+
+#sidebar {
+    position:absolute;
+    top: 50px;
+}
+
+#fields-table thead th {
+    width: 45%;
+}
+
+.index {
+    width: 10% !important;
+}
+
+
+
