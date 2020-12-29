@@ -31,31 +31,6 @@ document.querySelector('#fields-table').addEventListener('keyup', (e) => {
     ui.setEmbedField();
 });
 
-(function () {
-    'use strict';
-    window.addEventListener('load', function () {
-        // Fetch all the forms we want to apply custom Bootstrap validation styles to
-        var forms = document.getElementsByClassName('needs-validation');
-        // Loop over them and prevent submission
-        var validation = Array.prototype.filter.call(forms, function (form) {
-            form.addEventListener('submit', function (event) {
-                if (form.checkValidity() === false) {
-                    event.preventDefault();
-                    event.stopPropagation();
-
-                    var errorElements = document.querySelectorAll(
-                        "input.form-control:invalid");
-                    $('html, body').animate({
-                        scrollTop: $(errorElements[0]).offset().top
-                    }, 2000);
-                    ui.showAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
-                }
-                form.classList.add('was-validated');
-            }, false);
-        });
-    }, false);
-})();
-
 document.addEventListener('blur', function (event) {
     // Only run if the field is in a form to be validated
     if (!event.target.form || !event.target.form.classList.contains('needs-validation')) return;
@@ -73,10 +48,7 @@ document.addEventListener('blur', function (event) {
 }, true);
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
-    if (grecaptcha.getResponse() === '') {
-        document.querySelector('.recaptcha-error').classList.add("border");
-        document.querySelector('.recaptcha-error-message').classList.remove("d-none");
-    } else {
+    if ((testing === true || grecaptcha.getResponse() !== '') && e.target.checkValidity() === true) {
         document.querySelector('.recaptcha-error').classList.remove("border");
         document.querySelector('.recaptcha-error-message').classList.add("d-none");
         let obj = {};
@@ -84,10 +56,12 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
             defaultValues = { 'color': "#33cc92" };
             if (input.type !== 'submit') {
                 obj[input.name] = input.value;
-                // input.value = defaultValues[input.type] || '';
+                input.value = defaultValues[input.type] || '';
             }
         });
         grecaptcha.reset();
+        ui.clearFieldsTable();
+
         const params = {
             method: 'POST',
             mode: 'no-cors',
@@ -106,6 +80,22 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
         $('html, body').animate({
             scrollTop: $('body').offset().top
         }, 2000);
+    }else if (grecaptcha.getResponse() === '') {
+        e.preventDefault();
+        e.stopPropagation();
+        document.querySelector('.recaptcha-error').classList.add("border");
+        document.querySelector('.recaptcha-error-message').classList.remove("d-none");
+    } else if (form.checkValidity() === false) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        let errorElements = document.querySelectorAll(
+            "input.form-control:invalid");
+        $('html, body').animate({
+            scrollTop: $(errorElements[0]).offset().top
+        }, 2000);
+        ui.showAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
+        e.target.classList.add('was-validated');
     }
 
     e.preventDefault();
