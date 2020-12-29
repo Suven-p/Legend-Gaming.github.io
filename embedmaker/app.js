@@ -58,7 +58,7 @@ document.querySelector('#fields-table').addEventListener('keyup', (e) => {
 
 document.addEventListener('blur', function (event) {
     // Only run if the field is in a form to be validated
-    if (!event.target.form.classList.contains('needs-validation')) return;
+    if (!event.target.form || !event.target.form.classList.contains('needs-validation')) return;
     // Validate the field
     if (event.target.validity.valid) {
         event.target.classList.add('is-valid');
@@ -73,7 +73,7 @@ document.addEventListener('blur', function (event) {
 }, true);
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
-    if (grecaptcha.getResponse() === '' || testing) {
+    if (grecaptcha.getResponse() === '') {
         document.querySelector('.recaptcha-error').classList.add("border");
         document.querySelector('.recaptcha-error-message').classList.remove("d-none");
     } else {
@@ -98,11 +98,11 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
         };
         const url = document.querySelector('form#mG61Hd').action;
         let result;
-        // fetch(url, params)
-        //     .then(res => { console.log(res); result = res; })
-        //     .catch(err => console.error(err));
+        fetch(url, params)
+            .then(res => { console.log(res); result = res; })
+            .catch(err => console.error(err));
+        document.querySelectorAll('.alert').forEach((element) => element.remove());
         ui.showAlert('Form submitted successsfully.', 'card mb-3 rounded-3 border border-success text-center text-success');
-        document.querySelector('.alert').remove();
         $('html, body').animate({
             scrollTop: $('body').offset().top
         }, 2000);
