@@ -53,60 +53,75 @@ $('input').blur(function (event) {
 });
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
-    if ((testing === true || grecaptcha.getResponse() !== '') && e.target.checkValidity() === true) {
-        document.querySelector('.recaptcha-error').classList.remove("border");
-        document.querySelector('.recaptcha-error-message').classList.add("d-none");
-        let obj = {};
-        document.querySelectorAll('#mG61Hd input').forEach((input) => {
-            defaultValues = { 'color': "#33cc92" };
-            if (input.type !== 'submit') {
-                obj[input.name] = input.value;
-                input.value = defaultValues[input.type] || '';
-            }
-        });
-        grecaptcha.reset();
-        ui.clearFieldsTable();
+    if (e.target.checkValidity() === true && validateFields()) {
+        if (testing === true || grecaptcha.getResponse() !== '') {
+            document.querySelector('.recaptcha-error').classList.remove("border");
+            document.querySelector('.recaptcha-error-message').classList.add("d-none");
+            let obj = {};
+            document.querySelectorAll('#mG61Hd input').forEach((input) => {
+                defaultValues = { 'color': "#33cc92" };
+                if (input.type !== 'submit') {
+                    obj[input.name] = input.value;
+                    input.value = defaultValues[input.type] || '';
+                }
+            });
+            grecaptcha.reset();
+            ui.clearFieldsTable();
 
-        const params = {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: (new URLSearchParams(obj)).toString()
-        };
-        const url = document.querySelector('form#mG61Hd').action;
-        let result;
-        fetch(url, params)
-            .then(res => { console.log(res); result = res; })
-            .catch(err => console.error(err));
-        document.querySelectorAll('.alert').forEach((element) => element.remove());
-        ui.showAlert('Form submitted successsfully.', 'card mb-3 rounded-3 border border-success text-center text-success');
+            const params = {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: (new URLSearchParams(obj)).toString()
+            };
+            const url = document.querySelector('form#mG61Hd').action;
+            let result;
+            fetch(url, params)
+                .then(res => { console.log(res); result = res; })
+                .catch(err => console.error(err));
+            document.querySelectorAll('.alert').forEach((element) => element.remove());
+            document.querySelectorAll('input').forEach((element) => element.classList.remove('is-valid', 'is-invalid'));
+            e.target.classList.remove('was-validated');
+            ui.showAlert('Form submitted successsfully.', 'card mb-3 rounded-3 border border-success text-center text-success');
+            $('html, body').animate({
+                scrollTop: $('body').offset().top
+            }, 2000);
+        } else if (grecaptcha.getResponse() === '') {
+            e.preventDefault();
+            e.stopPropagation();
+            document.querySelector('.recaptcha-error').classList.add("border");
+            document.querySelector('.recaptcha-error-message').classList.remove("d-none");
+        }
+    } else if (!validateFields()) {
+        let embedFieldsUI = document.querySelector('#embed-fields');
+        document.querySelector('#table-message-top').textContent = 'You can only have 25 fields.';
+        document.querySelector('#table-message-top').classList.remove("d-none");
+        document.querySelector('#table-message-top').classList.add("d-block");
+        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
         $('html, body').animate({
-            scrollTop: $('body').offset().top
+            scrollTop: $('#fields-table').parent().offset().top
         }, 2000);
-    }else if (grecaptcha.getResponse() === '') {
+    } else {
         e.preventDefault();
         e.stopPropagation();
-        document.querySelector('.recaptcha-error').classList.add("border");
-        document.querySelector('.recaptcha-error-message').classList.remove("d-none");
-    } else if (form.checkValidity() === false) {
-        e.preventDefault();
-        e.stopPropagation();
-
-        let errorElements = document.querySelectorAll(
-            "input.form-control:invalid");
-        $('html, body').animate({
-            scrollTop: $(errorElements[0]).offset().top
-        }, 2000);
-        ui.showAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
-        e.target.classList.add('was-validated');
+        if (e.target.checkValidity() === false) {
+            let errorElements = document.querySelectorAll(
+                "input.form-control:invalid");
+            $('html, body').animate({
+                scrollTop: $(errorElements[0]).offset().top
+            }, 2000);
+            ui.showAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
+            e.target.classList.add('was-validated');
+        }
     }
 
     e.preventDefault();
 });
 
 function validateFields() {
+    isValid = true;
     let embedFieldsUI = document.querySelector('#embed-fields');
     document.querySelector('#fields-table tbody').querySelectorAll('tr').forEach(row => {
         let name = row.querySelector('.field-names').textContent.trim(),
@@ -122,6 +137,7 @@ function validateFields() {
     }
     return isValid;
 }
+
 
 
 
