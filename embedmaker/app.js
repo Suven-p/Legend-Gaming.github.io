@@ -31,21 +31,25 @@ document.querySelector('#fields-table').addEventListener('keyup', (e) => {
     ui.setEmbedField();
 });
 
-document.addEventListener('blur', function (event) {
+$('input').blur(function (event) {
     // Only run if the field is in a form to be validated
-    if (!event.target.form || !event.target.form.classList.contains('needs-validation')) return;
+    if (!event.target.form || !event.target.form.classList.contains('needs-validation')) {
+        return;
+    }
     // Validate the field
+    if (event.target.value === '' && event.target.required === false) {
+        return;
+    }
     if (event.target.validity.valid) {
         event.target.classList.add('is-valid');
         event.target.classList.remove('is-invalid');
         event.target.setCustomValidity('');
-    }
-    else {
+    } else {
         event.target.classList.add('is-invalid');
         event.target.classList.remove('is-valid');
         event.target.parentElement.querySelector('.invalid-feedback').innerText = event.target.validationMessage;
     }
-}, true);
+});
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
     if ((testing === true || grecaptcha.getResponse() !== '') && e.target.checkValidity() === true) {
