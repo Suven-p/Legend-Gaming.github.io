@@ -11,7 +11,7 @@ class UI {
         $('td.index', ui.item.parent()).each(function (i) {
             $(this).html(i + 1);
         });
-        this.setEmbedField();
+        UI.setEmbedField();
     }
 
     enableDragNDropSort(tableID) {
@@ -70,8 +70,8 @@ class UI {
         document.getElementById('fields-table').classList.add('d-none');
     }
 
-    // set value of hidder embed field to json from table
-    setEmbedField() {
+    // set value of hidden embed field to json from table
+    static setEmbedField() {
         const rows = document.querySelector('#fields-table tbody').querySelectorAll('tr');
         let fields = [], name = "", value = "", i = 0;
         rows.forEach((row) => {

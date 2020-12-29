@@ -22,13 +22,14 @@ document.querySelector('#fields-table').addEventListener('click', (e) => {
         ui.deleteField(e.target);
     }
     if (e.target.parentElement.classList.contains("field-inline")) {
-        ui.setEmbedField();
+        UI.setEmbedField();
     }
 });
 
 // Update field
-document.querySelector('#fields-table').addEventListener('keyup', (e) => {
-    ui.setEmbedField();
+document.querySelector('#fields-table').addEventListener('input', (e) => {
+    UI.setEmbedField();
+    validateFields();
 });
 
 $('input').blur(function (event) {
