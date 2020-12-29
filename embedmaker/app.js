@@ -106,6 +106,22 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
     e.preventDefault();
 });
 
+function validateFields() {
+    let embedFieldsUI = document.querySelector('#embed-fields');
+    document.querySelector('#fields-table tbody').querySelectorAll('tr').forEach(row => {
+        let name = row.querySelector('.field-names').textContent.trim(),
+            value = row.querySelector('.field-values').textContent.trim();
+        if (name === null) name = '';
+        if (value === null) value = '';
+        if ((name === '' && value !== '') || (value === '' && name != '')) isValid = false;
+    });
+    if (isValid) {
+        embedFieldsUI.setCustomValidity('');
+    } else {
+        embedFieldsUI.setCustomValidity('Please fill both name and values.');
+    }
+    return isValid;
+}
 
 
 
