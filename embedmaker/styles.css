@@ -58,5 +58,10 @@ table {
     width: 10% !important;
 }
 
+#table-messsage {
+    position: relative;
+    bottom: 1rem;
+}
+
 
 

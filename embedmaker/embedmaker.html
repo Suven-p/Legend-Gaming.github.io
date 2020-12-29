@@ -14,7 +14,6 @@
 		href="https://fonts.googleapis.com/css?family=Google+Sans:400,500|Roboto:300,400,400i,500,700&amp;subset=latin,vietnamese,latin-ext,cyrillic,greek,cyrillic-ext,greek-ext"
 		rel="stylesheet" type="text/css">
 	<link rel="stylesheet" href="styles.css">
-
 	<title>Embed Maker Form</title>
 </head>
 
@@ -184,9 +183,11 @@
 						<div class="card-body">
 							<h4 class="card-title">Fields:</h4>
 							<small class="text-muted d-block">Fields to display in embed</small>
-							<input type="hidden" name="entry.394621290"
-								class="form-control mt-4 border-top-0 border-left-0 border-right-0 border-bottom-1 shadow-none"
-								id="embed-fields">
+							<input type="text" name="entry.394621290" class="form-control d-none" id="embed-fields">
+							<div class="invalid-feedback"></div>
+							<div class="valid-feedback"></div>
+							<div id="table-message-top" class="alert border border-danger text-danger text-center m-2 d-none">
+							</div>
 							<table class="table table-hover table-bordered mt-4 d-none" id="fields-table">
 								<thead class="thead-light">
 									<tr>
@@ -200,6 +201,9 @@
 								<tbody id="sortable">
 								</tbody>
 							</table>
+							<div class="">&nbsp;</div>
+							<div id="table-message" class="alert border border-danger text-danger text-center m-2 d-none">
+							</div>
 							<button class="btn btn-primary mt-2" id="new-field-btn">Add new field</button>
 							<button class="btn btn-primary mt-2" id="clear-field-btn">Clear all fields</button>
 						</div>

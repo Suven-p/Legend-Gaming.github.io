@@ -38,12 +38,13 @@ class UI {
         let table = document.querySelector('#fields-table tbody');
         let numRows = document.querySelectorAll('#fields-table tbody tr').length;
         if (numRows === 25) {
+            document.querySelector('#table-message').textContent = 'You can only have 25 fields.'
             document.querySelector('#table-message').classList.remove("d-none");
             document.querySelector('#table-message').classList.add("d-block");
             setTimeout(() => {
                 document.querySelector('#table-message').classList.add("d-none");
                 document.querySelector('#table-message').classList.remove("d-block");
-            }, 3000);
+            }, 5000);
             return;
         }
         let row = document.createElement('tr');

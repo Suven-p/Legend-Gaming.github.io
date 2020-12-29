@@ -154,17 +154,21 @@ fields.forEach((data) => {
 
 let format = `
     <form
-    action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSer-QDRNEIeu2wLtR7EP1hq6uNgntH3vJBpqe5SpNZBAw_hUA/formResponse"
-    target="_self" method="POST" id="mG61Hd" class="needs-validation" novalidate>
+        action="https://docs.google.com/forms/u/0/d/e/1FAIpQLSer-QDRNEIeu2wLtR7EP1hq6uNgntH3vJBpqe5SpNZBAw_hUA/formResponse"
+        target="_self" method="POST" id="mG61Hd" class="needs-validation" novalidate>
         ${divs}
 
         <div class="card mb-3 rounded-3 table-container">
             <div class="card-body">
                 <h4 class="card-title">Fields:</h4>
                 <small class="text-muted d-block">Fields to display in embed</small>
-                <input type="hidden" name="entry.394621290"
-                    class="form-control mt-4 border-top-0 border-left-0 border-right-0 border-bottom-1 shadow-none"
+                <input type="text" name="entry.394621290"
+                    class="form-control d-none"
                     id="embed-fields">
+                <div class="invalid-feedback"></div>
+                <div class="valid-feedback"></div>
+                <div id="table-message-top" class="alert border border-danger text-danger text-center m-2 d-none">
+				</div>
                 <table class="table table-hover table-bordered mt-4 d-none" id="fields-table">
                     <thead class="thead-light">
                         <tr>
@@ -178,6 +182,9 @@ let format = `
                     <tbody id="sortable">
                     </tbody>
                 </table>
+                <div class="">&nbsp;</div>
+                <div id="table-message" class="alert border border-danger text-danger text-center m-2 d-none">
+                </div>
                 <button class="btn btn-primary mt-2" id="new-field-btn">Add new field</button>
                 <button class="btn btn-primary mt-2" id="clear-field-btn">Clear all fields</button>
             </div>
