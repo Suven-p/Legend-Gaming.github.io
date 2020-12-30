@@ -36,10 +36,7 @@ input[type=text]:focus {
     width: 10% !important;
 }
 
-#table-messsage {
-    position: relative;
+#table-message-bottom {
     bottom: 1rem;
 }
-
-
 
