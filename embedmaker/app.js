@@ -29,28 +29,34 @@ document.querySelector('#fields-table').addEventListener('click', (e) => {
 // Update field
 document.querySelector('#fields-table').addEventListener('input', (e) => {
     UI.setEmbedField();
-    validateFields();
 });
 
-$('input').blur(function (event) {
+document.addEventListener('blur', function (event) {
     // Only run if the field is in a form to be validated
-    if (!event.target.form || !event.target.form.classList.contains('needs-validation')) {
-        return;
+    if (event.target.form && event.target.form.classList.contains('needs-validation')) {
+        // Validate the field
+        if (event.target.value === '' && event.target.required === false) {
+            return;
+        }
+        if (event.target.validity.valid) {
+            event.target.classList.add('is-valid');
+            event.target.classList.remove('is-invalid');
+            event.target.setCustomValidity('');
+        } else {
+            event.target.classList.add('is-invalid');
+            event.target.classList.remove('is-valid');
+            event.target.parentElement.querySelector('.invalid-feedback').innerText = event.target.validationMessage;
+        }
+        // If blur event is from td element, validate all rows above current row and set the message
+    } else if (event.target.parentElement.parentElement.id === 'sortable') {
+        let rowsAbove = [];
+        for (let rowAbove = event.target.parentElement.previousElementSibling; rowAbove != null; rowAbove = rowAbove.previousElementSibling) {
+            rowsAbove.push(rowAbove);
+        }
+        validateFields(rowsAbove);
+        setFieldsTableErrorMessage();
     }
-    // Validate the field
-    if (event.target.value === '' && event.target.required === false) {
-        return;
-    }
-    if (event.target.validity.valid) {
-        event.target.classList.add('is-valid');
-        event.target.classList.remove('is-invalid');
-        event.target.setCustomValidity('');
-    } else {
-        event.target.classList.add('is-invalid');
-        event.target.classList.remove('is-valid');
-        event.target.parentElement.querySelector('.invalid-feedback').innerText = event.target.validationMessage;
-    }
-});
+}, true);
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
     if (e.target.checkValidity() === true && validateFields(document.querySelector('#fields-table tbody').querySelectorAll('tr'))) {
