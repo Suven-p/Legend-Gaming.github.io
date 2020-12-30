@@ -1,22 +1,24 @@
+// If testing is true, form is submitted even if recaptcha is not filled out.
+// However, the server disregards forms without valid recaptcha token.
 let testing = true;
 
 const ui = new UI();
 ui.enableDragNDropSort("#fields-table");
 
-// Add new field
+// Add new field to #fields-table table
 document.querySelector('#new-field-btn').addEventListener('click', (e) => {
     ui.addField();
     e.preventDefault();
 });
 
-// Clear Fields
+// Clear all fields in #fields-table table
 document.querySelector('#clear-field-btn').addEventListener('click', (e) => {
     ui.clearFieldsTable();
     ui.hideFieldsTable();
     e.preventDefault();
 });
 
-// Delete field
+// Delete a row when user clicks on X button
 document.querySelector('#fields-table').addEventListener('click', (e) => {
     if (e.target.parentElement.classList.contains("close-btn")) {
         ui.deleteField(e.target);
@@ -26,15 +28,16 @@ document.querySelector('#fields-table').addEventListener('click', (e) => {
     }
 });
 
-// Update field
+// Update hidden field #embed-fields with json representation every time fields are edited
 document.querySelector('#fields-table').addEventListener('input', (e) => {
     UI.setEmbedField();
 });
 
+// Validate input fields on blur
 document.addEventListener('blur', function (event) {
     // Only run if the field is in a form to be validated
     if (event.target.form && event.target.form.classList.contains('needs-validation')) {
-        // Validate the field
+        // If a empty field is not a required field, don't mark it as valid or invalid
         if (event.target.value === '' && event.target.required === false) {
             return;
         }
@@ -47,33 +50,27 @@ document.addEventListener('blur', function (event) {
             event.target.classList.remove('is-valid');
             event.target.parentElement.querySelector('.invalid-feedback').innerText = event.target.validationMessage;
         }
-        // If blur event is from td element, validate all rows above current row and set the message
     } else if (event.target.parentElement.parentElement.id === 'sortable') {
+        // If blur event is from td element in #fields-table, validate all rows above current row and set the message
         let rowsAbove = [];
         for (let rowAbove = event.target.parentElement.previousElementSibling; rowAbove != null; rowAbove = rowAbove.previousElementSibling) {
             rowsAbove.push(rowAbove);
         }
         validateFields(rowsAbove);
-        setFieldsTableErrorMessage();
+        ui.showTableTopAlert();
     }
 }, true);
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
     if (e.target.checkValidity() === true && validateFields(document.querySelector('#fields-table tbody').querySelectorAll('tr'))) {
         if (testing === true || grecaptcha.getResponse() !== '') {
-            document.querySelector('.recaptcha-error').classList.remove("border");
-            document.querySelector('.recaptcha-error-message').classList.add("d-none");
+            // Encode and send data
             let obj = {};
             document.querySelectorAll('#mG61Hd input').forEach((input) => {
-                defaultValues = { 'color': "#33cc92" };
                 if (input.type !== 'submit') {
                     obj[input.name] = input.value;
-                    input.value = defaultValues[input.type] || '';
                 }
             });
-            grecaptcha.reset();
-            ui.clearFieldsTable();
-
             const params = {
                 method: 'POST',
                 mode: 'no-cors',
@@ -87,38 +84,46 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
             fetch(url, params)
                 .then(res => { console.log(res); result = res; })
                 .catch(err => console.error(err));
-            document.querySelectorAll('.alert').forEach((element) => element.remove());
-            document.querySelectorAll('input').forEach((element) => element.classList.remove('is-valid', 'is-invalid'));
+
+            // Reset the form
             e.target.classList.remove('was-validated');
-            ui.showAlert('Form submitted successsfully.', 'card mb-3 rounded-3 border border-success text-center text-success');
+            let defaultValues = { 'color': "#33cc92" };
+            document.querySelectorAll('.alert').forEach((element) => element.remove());
+            document.querySelectorAll('input').forEach((element) => {
+                element.classList.remove('is-valid', 'is-invalid');
+                input.value = defaultValues[input.type] || '';
+            });
+            ui.clearFieldsTable();
+            grecaptcha.reset();
+            document.querySelector('.recaptcha-error').classList.remove("border");
+            document.querySelector('.recaptcha-error-message').classList.add("d-none");
+
+            // Notify successful form submission
+            ui.showFormAlert('Form submitted successsfully.', 'card mb-3 rounded-3 border border-success text-center text-success');
             $('html, body').animate({
                 scrollTop: $('body').offset().top
             }, 2000);
         } else if (grecaptcha.getResponse() === '') {
-            e.preventDefault();
-            e.stopPropagation();
             document.querySelector('.recaptcha-error').classList.add("border");
             document.querySelector('.recaptcha-error-message').classList.remove("d-none");
+            e.stopPropagation();
         }
     } else if (!validateFields(document.querySelector('#fields-table tbody').querySelectorAll('tr'))) {
-        setFieldsTableErrorMessage();
+        ui.showTableTopAlert();
         $('html, body').animate({
             scrollTop: $('#fields-table').parent().offset().top
         }, 2000);
-    } else {
-        e.preventDefault();
         e.stopPropagation();
-        if (e.target.checkValidity() === false) {
-            let errorElements = document.querySelectorAll(
-                "input.form-control:invalid");
-            $('html, body').animate({
-                scrollTop: $(errorElements[0]).offset().top
-            }, 2000);
-            ui.showAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
-            e.target.classList.add('was-validated');
-        }
+    } else if (e.target.checkValidity() === false) {
+        e.target.classList.add('was-validated');
+        let errorElements = document.querySelectorAll(
+            "input.form-control:invalid");
+        $('html, body').animate({
+            scrollTop: $(errorElements[0]).offset().top
+        }, 2000);
+        ui.showFormAlert('Please fill out all the fields marked with *', 'card mb-3 rounded-3 border border-danger text-center text-danger');
+        e.stopPropagation();
     }
-
     e.preventDefault();
 });
 
@@ -145,27 +150,4 @@ function validateFields(rowsList) {
     }
     return isValid;
 }
-
-function setFieldsTableErrorMessage() {
-    let embedFieldsUI = document.querySelector('#embed-fields');
-    if (embedFieldsUI.validationMessage !== '') {
-        document.querySelector('#table-message-top').classList.remove("d-none");
-        document.querySelector('#table-message-top').classList.add("d-block");
-        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
-    } else {
-        document.querySelector('#table-message-top').classList.add("d-none");
-        document.querySelector('#table-message-top').classList.remove("d-block");
-        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
-    }
-}
-
-
-
-
-
-
-
-
-
-
 

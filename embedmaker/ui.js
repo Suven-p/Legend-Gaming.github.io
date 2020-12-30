@@ -38,12 +38,12 @@ class UI {
         let table = document.querySelector('#fields-table tbody');
         let numRows = document.querySelectorAll('#fields-table tbody tr').length;
         if (numRows === 25) {
-            document.querySelector('#table-message').textContent = 'You can only have 25 fields.';
-            document.querySelector('#table-message').classList.remove("d-none");
-            document.querySelector('#table-message').classList.add("d-block");
+            document.querySelector('#table-message-bottom').textContent = 'You can only have 25 fields.';
+            document.querySelector('#table-message-bottom').classList.remove("d-none");
+            document.querySelector('#table-message-bottom').classList.add("d-block");
             setTimeout(() => {
-                document.querySelector('#table-message').classList.add("d-none");
-                document.querySelector('#table-message').classList.remove("d-block");
+                document.querySelector('#table-message-bottom').classList.add("d-none");
+                document.querySelector('#table-message-bottom').classList.remove("d-block");
             }, 5000);
             return;
         }
@@ -108,12 +108,25 @@ class UI {
         return obj;
     }
 
-    showAlert(msg, className) {
+    showFormAlert(msg, className) {
         const div = document.createElement('div');
         div.className = `alert ${className}`;
         div.appendChild(document.createTextNode(msg));
         const main = document.querySelector('#main');
         const form = document.querySelector('#mG61Hd');
         main.insertBefore(div, form);
+    }
+
+    showTableTopAlert() {
+        let embedFieldsUI = document.querySelector('#embed-fields');
+        if (embedFieldsUI.validationMessage !== '') {
+            document.querySelector('#table-message-top').classList.remove("d-none");
+            document.querySelector('#table-message-top').classList.add("d-block");
+            document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
+        } else {
+            document.querySelector('#table-message-top').classList.add("d-none");
+            document.querySelector('#table-message-top').classList.remove("d-block");
+            document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
+        }
     }
 }
