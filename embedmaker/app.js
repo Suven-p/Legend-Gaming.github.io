@@ -53,7 +53,7 @@ $('input').blur(function (event) {
 });
 
 document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
-    if (e.target.checkValidity() === true && validateFields()) {
+    if (e.target.checkValidity() === true && validateFields(document.querySelector('#fields-table tbody').querySelectorAll('tr'))) {
         if (testing === true || grecaptcha.getResponse() !== '') {
             document.querySelector('.recaptcha-error').classList.remove("border");
             document.querySelector('.recaptcha-error-message').classList.add("d-none");
@@ -94,12 +94,8 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
             document.querySelector('.recaptcha-error').classList.add("border");
             document.querySelector('.recaptcha-error-message').classList.remove("d-none");
         }
-    } else if (!validateFields()) {
-        let embedFieldsUI = document.querySelector('#embed-fields');
-        document.querySelector('#table-message-top').textContent = 'You can only have 25 fields.';
-        document.querySelector('#table-message-top').classList.remove("d-none");
-        document.querySelector('#table-message-top').classList.add("d-block");
-        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
+    } else if (!validateFields(document.querySelector('#fields-table tbody').querySelectorAll('tr'))) {
+        setFieldsTableErrorMessage();
         $('html, body').animate({
             scrollTop: $('#fields-table').parent().offset().top
         }, 2000);
@@ -120,15 +116,21 @@ document.querySelector('#mG61Hd').addEventListener('submit', (e) => {
     e.preventDefault();
 });
 
-function validateFields() {
+function validateFields(rowsList) {
+    if (rowsList.length === 0) return true;
     isValid = true;
     let embedFieldsUI = document.querySelector('#embed-fields');
-    document.querySelector('#fields-table tbody').querySelectorAll('tr').forEach(row => {
+    rowsList.forEach(row => {
         let name = row.querySelector('.field-names').textContent.trim(),
             value = row.querySelector('.field-values').textContent.trim();
         if (name === null) name = '';
         if (value === null) value = '';
-        if ((name === '' && value !== '') || (value === '' && name != '')) isValid = false;
+        if ((name === '' && value !== '') || (value === '' && name != '')) {
+            isValid = false;
+            row.valid = false;
+        } else {
+            row.valid = true;
+        }
     });
     if (isValid) {
         embedFieldsUI.setCustomValidity('');
@@ -136,6 +138,19 @@ function validateFields() {
         embedFieldsUI.setCustomValidity('Please fill both name and values.');
     }
     return isValid;
+}
+
+function setFieldsTableErrorMessage() {
+    let embedFieldsUI = document.querySelector('#embed-fields');
+    if (embedFieldsUI.validationMessage !== '') {
+        document.querySelector('#table-message-top').classList.remove("d-none");
+        document.querySelector('#table-message-top').classList.add("d-block");
+        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
+    } else {
+        document.querySelector('#table-message-top').classList.add("d-none");
+        document.querySelector('#table-message-top').classList.remove("d-block");
+        document.querySelector('#table-message-top').innerText = embedFieldsUI.validationMessage;
+    }
 }
 
 
