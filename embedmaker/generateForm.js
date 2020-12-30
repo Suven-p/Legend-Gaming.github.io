@@ -143,8 +143,7 @@ fields.forEach((data) => {
                 <small class="text-muted d-block">${data.description}</small>
                 <input type="${data.type}" name="${data.name}"
                     class="${data.classList}"
-                    id="${data.id}" ${data.validation || ''} ${(data.required) ? "required" : ""}
-                    aria-label="${data.title}">
+                    id="${data.id}" ${data.validation || ''} ${(data.required) ? "required" : ""} aria-label="${data.title}">
                 <div class="invalid-feedback">${(data.invalidFeedback) || ''}</div>
                 <div class="valid-feedback"></div>
             </div>
@@ -167,7 +166,8 @@ let format = `
                     id="embed-fields">
                 <div class="invalid-feedback"></div>
                 <div class="valid-feedback"></div>
-                <div id="table-message-top" class="alert border border-danger text-danger text-center m-2 d-none">
+                <div id="table-message-top"
+                    class="alert border border-danger text-danger text-center m-2 d-none">
 				</div>
                 <table class="table table-hover table-bordered mt-4 d-none" id="fields-table">
                     <thead class="thead-light">
@@ -183,7 +183,8 @@ let format = `
                     </tbody>
                 </table>
                 <div class="">&nbsp;</div>
-                <div id="table-message" class="alert border border-danger text-danger text-center m-2 d-none">
+                <div id="table-message"
+                    class="alert border border-danger text-danger text-center m-2 d-none">
                 </div>
                 <button class="btn btn-primary mt-2" id="new-field-btn">Add new field</button>
                 <button class="btn btn-primary mt-2" id="clear-field-btn">Clear all fields</button>
