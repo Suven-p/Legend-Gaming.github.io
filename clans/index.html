@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Description" content="Redirect to clash royale page.">
+
+    <title>Legend Clans</title>
+</head>
+
+<body>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', (e) => {
+            const params = (new URL(document.location)).searchParams;
+            let tag = params.get('clantag') || params.get('clanTag');
+            console.log(tag)
+            alert(tag)
+            if (!tag) {
+                document.querySelector('body').innerHTML = '<h1>This page is intended as redirect to invite page for clash royale clans.</h1>'
+            }
+            else {
+                const cleanTag = tag.trim().replace('#', '').toUpperCase();
+                const clanUrl = `https://link.clashroyale.com/?clanInfo?id=${cleanTag}`;
+                window.location.replace(clanUrl);
+            }
+        }, false);
+    </script>
+
+</body>
