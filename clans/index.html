@@ -15,8 +15,6 @@
         document.addEventListener('DOMContentLoaded', (e) => {
             const params = (new URL(document.location)).searchParams;
             let tag = params.get('clantag') || params.get('clanTag');
-            console.log(tag)
-            alert(tag)
             if (!tag) {
                 document.querySelector('body').innerHTML = '<h1>This page is intended as redirect to invite page for clash royale clans.</h1>'
             }
